@@ -1,0 +1,350 @@
+#**ES6规范**
+#变量声明：
+ES5只有两种声明变量的方法:var和function
+ES6有6中声明变量的方法：var,function,let,const,import,class
+let命令：块级作用域
+const命令：常量，声明之后就不能改变
+
+
+#变量的解构赋值
+###变换变量的值
+	
+
+    let x=1;let y=2;
+    	[x,y]=[y,x]
+
+###从函数返回多个值
+	
+
+    function example(){
+    		return [1,2,3];
+    	}
+    	let [a,b,c]=example();
+    	console.log(a);//1
+    	console.log(b);//2
+    	function example(){
+    		return{
+    			foo:1,
+    			bar:2,
+    		}
+    	}
+    	let {foo,bar}=example();
+    	console.log(foo);//1
+
+###函数参数的定义
+###提前JSON数据
+	
+
+    let jsonData={
+    		id:22,
+    		name:"sun"
+    	};
+    	let {id,name}=jsonData;
+    	console.log(id);//22
+
+###函数参数默认值
+###遍历Map结构
+###输入模块的指定方法
+
+#字符串的扩展
+ 1.repeat方法返回新的字符串，表示将原字符串重复n次
+ 2.除indexOf方法外，定义了三种方法
+	includes():返回bool，表示是否找到参数字符串；
+	startsWith():返回bool，表示参数字符串是否在原字符串的头部；
+	endsWith():返回bool，表示参数字符串是否在原字符串的尾部。
+
+#数值的扩展
+1.在Number对象上，新提供了Number.isFinite()和Number.isNaN()两个方法
+2.在Number.isInteger()用来判断一个数值是否为整数。
+
+#函数的扩展
+1.rest参数(形式:...变量名)
+	
+
+    function add(...values) {
+        let sum = 0
+        for（var val of values) {
+            sum += val
+        }
+        return sum
+    	}
+    	add(2, 3, 4) // 9
+    
+    	function push(array, ...items) {
+        items.forEach(function(item) {
+            array.push(item)
+            console.log(item)
+    		})
+    	}
+    	var a = []
+    	push(a, 1, 2, 3)
+    	console.log(a);//[1,2,3];
+
+2.name属性
+
+    function foo(){};
+    console.log()
+
+3.箭头函数=>
+
+    var sum = (num1, num2) => { return num1 + num2; }
+    // 等同于
+    var sum = function(num1, num2) {
+      return num1 + num2;
+    };
+
+4.函数绑定运算符
+	双冒号左边是一个对象，右边是一个函数。该运算符会自动将左边的对象，作为上下文环境（即this对象），绑定到右边的函数上面。
+	
+
+    var example={
+    		a:function(){
+    		},
+    		b:function(){
+    		}
+    	}
+    	example.a
+
+#数值的扩展
+ 1.entries(),keys()和values()  --用于遍历数值
+ 它们都返回一个遍历器对象，可以用for…of循环进行遍历，唯一的区别是keys()是对键名的遍历、values()是对键值的遍历，entries()是对键值对的遍历。
+
+#对象的扩展
+ 1.super关键字
+ this关键字总是指向函数所在的当前对象，ES6 又新增了另一个类似的关键字super，指向当前对象的原型对象。
+
+
+#Symbol
+	一种新的原始数据类型Symbol，表示独一无二的值。它是 JavaScript 语言的第七种数据类型，前六种是：undefined、null、布尔值（Boolean）、字符串（String）、数值（Number）、对象（Object）。
+	是一种类似于字符串的数据类型，不能使用new命令，不能添加属性，不能与其他类型的值进行运算，因为生成的 Symbol 是一个原始类型的值，不是对象。
+	Symbol函数的参数只是表示对当前 Symbol 值的描述，因此相同参数的Symbol函数的返回值是不相等的。
+
+
+#Set数据结构
+1.Set 类似于数组，但是成员的值都是位移的，没有重复的值。使用可以用来去重
+	//去除数组重复的成员
+    [...new Set(array)]
+	//去除字符串里面重复的字符
+	
+
+    [...new Set('aabbcc')].join('');//"abc"
+
+	//Array.from方法可以将 Set 结构转为数组。
+	//这就提供了去除数组重复成员的另一种方法。
+    function dedupe(array) {
+      return Array.from(new Set(array));
+    }
+    dedupe([1, 1, 2, 3]) // [1, 2, 3]
+
+ 2.不会发生类型转换，所以1和"1"是两个不同的值
+ 3.Set实例的方法分为两大类：操作方法用于操作数据和遍历方法用于遍历成员
+	add(value):添加值，返回Set结构本身；
+	delete(value):删除值，返回bool，表示删除是否成功。
+	has(value):返回bool,表示该值是否是Set成员。
+	clean():清除所有成员，没有返回值
+	let arr=[1,2,1];
+	let newArr=[...new Set(arr).add(3)];
+	console.log(newArr);//[1,2,3]
+	
+ 4.Set结构实例的四个遍历方法，可以用于遍历成员
+	keys():返回键名的遍历器
+	values():返回键值的遍历器
+	entries():返回键值对的遍历器
+	forEach():使用回调函数遍历每个成员，没有返回值
+    const s=new Set();
+    [2,3,4,2,3,5].forEach(t=>s.add(t));
+    console.log(s);//[2,3,4,5]
+
+##WeakSet
+	WeakSet 结构与 Set 类似，也是不重复的值的集合
+	const ws = new WeakSet();
+	const obj = {};
+	const foo = {};
+
+	ws.add(window);
+	ws.add(obj);
+##Map
+	ES6 提供了 Map 数据结构。它类似于对象，也是键值对的集合，但是“键”的范围不限于字符串，各种类型的值（包括对象）都可以当作键。
+	也就是说，Object 结构提供了“字符串—值”的对应，Map 结构提供了“值—值”的对应，是一种更完善的 Hash 结构实现。
+	如果你需要“键值对”的数据结构，Map 比 Object 更合适。
+	var map = new Map();
+	map.set("key",value)
+	map.set("key1",value1)
+	map.set("key2",value2)
+
+	方法以及属性：
+		 size 属性，返回 Map 结构的成员总数
+		 set(key, value)，设置键名key对应的键值为value
+		 get(key)，读取key对应的键值，如果找不到key，返回undefined。
+		 has(key)，表示某个键是否在当前 Map 对象之中。
+		 delete(key)，delete方法删除某个键，返回true。如果删除失败，返回false。
+		 clear()，清除所有成员，没有返回值。
+
+	四个遍历方法，可以用于遍历成员。
+		keys()：返回键名的遍历器。
+		values()：返回键值的遍历器。
+		entries()：返回所有成员的遍历器。
+		forEach()：遍历 Map 的所有成员。
+	与其他数据结构的互相转换
+	（1）Map 转为数组
+	Map 转为数组最方便的方法，就是使用扩展运算符（…）。
+	（2）数组 转为 Map
+	将数组传入 Map 构造函数，就可以转为 Map。
+	（3）Map 转为对象
+	如果所有 Map 的键都是字符串，它可以无损地转为对象。如果有非字符串的键名，那么这个键名会被转成字符串，再作为对象的键名
+
+
+#Proxy（代理器）
+
+#Promise 对象
+Promise 是异步编程的一种解决方案，比传统的解决方案——回调函数和事件——更合理和更强大，就是一个容器，里面保存着某个未来才会结束的事件（通常是一个异步操作）的结果。
+
+    const promise = new Promise(function(resolve, reject) {
+      // ... some code
+    
+      if (/* 异步操作成功 */){
+        resolve(value);
+      } else {
+        reject(error);
+      }
+    });
+    
+    promise.then(function(value) {
+      // success
+    }, function(error) {
+      // failure
+    });
+
+Promise.prototype.then() resolved状态的回调函数
+Promise.prototype.catch() reject状态的回调函数
+Promise.prototype.finally() 不管promise最后的状态，在执行完then或catch指定的回调函数以后，都会执行finally方法指定的回调函数。
+Promise.all() 用于将多个 Promise 实例，包装成一个新的 Promise 实例
+
+
+#Iterator和for...of循环
+主要是数组（Array）和对象（Object），ES6 又添加了Map和Set
+
+    for...of循环
+    var arr = ['a', 'b', 'c', 'd'];
+    
+    for (let a in arr) {
+      console.log(a); // 0 1 2 3
+    }
+    
+    for (let a of arr) {
+      console.log(a); // a b c d
+    }
+    in 循环键名
+    of 循环数值
+
+#Generator 函数
+	Generator 函数是一个状态机，封装了多个内部状态。执行 Generator 函数会返回一个Iterator对象。
+	function* helloWorldGenerator() {
+	  yield 'hello';
+	  yield 'world';
+	  return 'ending';
+	}
+
+	var hw = helloWorldGenerator();
+##yield表达式
+	由于 Generator 函数返回的遍历器对象，只有调用next方法才会遍历下一个内部状态，所以其实提供了一种可以暂停执行的函数。
+	yield表达式就是暂停标志。
+	yield表达式只能用在 Generator 函数里面，用在其他地方都会报错。
+	注：yield表达式后面的表达式，只有当调用next方法、内部指针指向该语句时才会执行。
+#处理异步
+	在前面说过Promise有一些缺点，我们可以用Generator 函数实现异步编程
+	协程有点像函数，又有点像线程。它的运行流程大致如下。
+
+	第一步，协程A开始执行。
+	第二步，协程A执行到一半，进入暂停，执行权转移到协程B。
+	第三步，（一段时间后）协程B交还执行权。
+	第四步，协程A恢复执行。
+
+	在Generator 函数中，协程遇到yield命令就暂停，等到执行权返回，再从暂停的地方继续往后执行。它的最大优点，就是代码的写法非常像同步操作。
+
+#async函数
+	//Generator 函数
+	const gen = function* () {
+	  const f1 = yield readFile('/etc/fstab');
+	  const f2 = yield readFile('/etc/shells');
+	  console.log(f1.toString());
+	  console.log(f2.toString());
+	};
+	//async函数
+	const asyncReadFile = async function () {
+	  const f1 = await readFile('/etc/fstab');
+	  const f2 = await readFile('/etc/shells');
+	  console.log(f1.toString());
+	  console.log(f2.toString());
+	};
+
+#Class
+	class Bussiness{
+		//...
+	}
+	typeof Bussiness//"function"
+	Bussiness===Bussiness.prototype.constructor//true
+
+	私有：引入一个新的前缀#表示私有属性或私有方法，代替private关键字，外部不能访问
+	class Foo{
+		#a;
+		constructor(a){
+			this.#a=a;
+		}
+		print(){
+			return this.#a;
+		}
+	}
+	let f=new Foo('aaaa');
+	console.log(f.print());//aaaa
+
+	new.target 属性
+	extends 继承 
+
+#Module
+	最主要的有 CommonJS 和 AMD 两种
+	引入和使用 export和import，export规定对外接口，import用于输入其他模块功能
+	var city='wuhan';
+	export {city};
+	//函数
+	export function sum(x,y){
+		return x+y;
+	}
+	
+	function funName(){
+		//...
+	}
+	export{ funName as FN }
+
+	import {city} from './file.js'
+	import {lastName as surname} from './file.js'
+
+#编码规范
+	##静态字符串一律使用单引号或反引号，不使用双引号。动态字符串使用反引号。
+	// bad
+	const a = "foobar";
+	const b = 'foo' + a + 'bar';
+
+	// acceptable
+	const c = `foobar`;
+
+	// good
+	const a = 'foobar';
+	const b = `foo${a}bar`;
+	##使用数组成员对变量赋值时，优先使用解构赋值。
+	##使用扩展运算符（…）拷贝数组。
+	// bad
+	const len = items.length;
+	const itemsCopy = [];
+	let i;
+
+	for (i = 0; i < len; i++) {
+	  itemsCopy[i] = items[i];
+	}
+
+	// good
+	const itemsCopy = [...items];
+	##使用 Array.from 方法，将类似数组的对象转为数组。
+	const foo = document.querySelectorAll('.foo');
+	const nodes = Array.from(foo);
+	##如果只是需要key: value的数据结构，使用 Map 结构。因为 Map 有内建的遍历机制。
