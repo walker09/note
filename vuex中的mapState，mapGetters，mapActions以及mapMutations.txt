@@ -1,0 +1,294 @@
+
+**vuex中的mapState，mapGetters，mapActions以及mapMutations**
+
+一、基本概念　　
+　　我们把vuex分为state，getter，mutation，action四个模块，通俗的讲一下四个模块的作用：
+　　state：定义变量；
+　　getters：获取变量；
+　　mutations：同步执行对变量进行的操作；
+　　actions：异步执行对变量进行的操作；
+　　vuex中的mapState，mapGetters，mapActions，mapMutations均是辅助函数。
+二、mapState
+　　引入vuex 以后，我们需要在state中定义变量，类似于vue中的data，通过state来存放状态。
+　　比如我们在vuex中定义state为：
+   
+
+    import Vue from 'vue'
+    import Vuex from 'vuex'
+    Vue.use(Vuex);
+        
+    export default new Vuex.Store({
+      state: {//存放状态，类似于data
+        nickname:'qiqi',
+        age:18,
+        gender:'女',
+        firstname:'李',
+        lastname:'辉',
+        days:1000,
+      },
+      getters:{},
+      mutations: {},
+      actions: {},
+      modules: {}
+    })
+
+　　我们想在组件中使用nickname，age，gender这三个属性。props，methods，data和computed的初始化都是在beforeCreated和created之间完成的，所以我们在computed中使用属性。
+　　当我们不使用mapState时，store 实例会注入到根组件下的所有子组件中，且子组件能通过 this.$store 访问到。代码如下：
+
+    <template>
+    <div>
+        <h1>昵称为：{{nickname}}</h1>
+        <h1>{{nickname}}年龄是:{{age}}</h1>
+        <h1>性别是：{{gender}}</h1>
+    </div>
+    </template>
+    
+    <script>
+        export default {
+            name: "Vhome",
+            computed:{
+                nickname(){
+                    return this.$store.state.nickname;
+                },
+                age(){
+                    return this.$store.state.age;
+                },
+                gender(){
+                    return this.$store.state.gender;
+                }
+    
+            },
+        }
+    </script>
+    
+    <style scoped>
+    
+    </style>
+
+　　当一个组件需要获取多个状态的时候，将这些状态都声明为计算属性会有些重复和冗余。为了解决这个问题，我们可以使用 mapState 辅助函数帮助我们生成计算属性:
+
+
+     import {mapState} from 'vuex'
+        export default {
+            name: "Vhome",
+            computed:{
+                ...mapState(['nickname','age','gender']),
+                // nickname(){
+                //     return this.$store.state.nickname;
+                // },
+                // age(){
+                //     return this.$store.state.age;
+                // },
+                // gender(){
+                //     return this.$store.state.gender;
+                // }
+            },
+    }
+
+　　记住：用mapState等这种辅助函数的时候，前面的方法名和获取的属性名是一致的。
+
+　　结果如下图所示：
+
+
+
+三、mapGetters
+　　vuex 允许我们在 store 中定义“getter”（可以认为是 store 的计算属性）。就像计算属性一样，getter 的返回值会根据它的依赖被缓存起来，且只有当它的依赖值发生了改变才会被重新计算。vuex部分代码如下所示：
+
+    import Vue from 'vue'
+    import Vuex from 'vuex'
+    
+    Vue.use(Vuex);
+    
+    export default new Vuex.Store({
+      state: {//存放状态，类似于data
+        nickname:'qiqi',
+        age:18,
+        gender:'女',
+        firstname:'李',
+        lastname:'辉',
+        days:1000,
+      },
+      getters:{
+        realname(state){
+          return state.firstname+state.lastname
+        },
+        days_us(state){
+          return (state.days/7).toFixed(2)
+        }
+      },
+      mutations: {},
+      actions: {},
+      modules: {}
+    })
+
+　　HTML部分为：
+
+    <h1>全名为：{{realname}}</h1>
+    <h1>周数为：{{days_us}}</h1>
+　　不使用mapGetters时，js部分为：
+
+
+ 
+
+     computed:{
+                realname(){
+                    return this.$store.getters.realname;
+                },
+                days_us(){
+                    return this.$store.getters.days_us;
+                },
+            },
+
+　　当使用mapGetters时，js部分为：
+
+
+        import {mapGetters} from 'vuex'
+        export default {
+            name: "Vhome",
+            computed:{
+                // realname(){
+                //     return this.$store.getters.realname;
+                // },
+                // days_us(){
+                //     return this.$store.getters.days_us;
+                // },
+                ...mapGetters(['realname','days_us']),
+            },
+    }
+
+　　结果如下图所示：
+
+
+ 四、mapMutations
+　　更改 vuex 的 store 中的状态的唯一方法是提交 mutation。
+　　vuex 中的 mutation 非常类似于事件：每个 mutation 都有一个字符串的事件类型 (type) 和 一个 回调函数 (handler)。这个回调函数就是我们实际进行状态更改的地方，并且它会接受 state 作为第一个参数
+　　例如我们实现点击按钮年龄加1的需求，vuex代码如下：
+
+    import Vue from 'vue'
+    import Vuex from 'vuex'
+    
+    Vue.use(Vuex);
+    
+    export default new Vuex.Store({
+      state: {//存放状态，类似于data
+        nickname:'qiqi',
+        age:18,
+        gender:'女',
+        firstname:'李',
+        lastname:'辉',
+        days:1000,
+      },
+      getters:{
+        realname(state){
+          return state.firstname+state.lastname
+        },
+        days_us(state){
+          return (state.days/7).toFixed(2)
+        }
+      },
+      mutations: {//类似于methods
+        addAge(state){
+          state.age++;
+        }
+      },
+      actions: {},
+      modules: {}
+    })
+
+　　当不使用mapMutations时，使用 this.$store.commit('xxx') 提交 mutation。HTML代码部分如下：
+
+<div><button @click="test">使用mutations年龄加1</button></div>
+　　js代码如下：
+
+    methods:{
+            test(){
+                this.$store.commit('addAge')
+            },
+        }
+　　当使用mapMutations时，将组件中的 methods 映射为 store.commit 调用。HTML代码部分如下：
+
+    <div><button @click="addAge">使用mutations年龄加1</button></div>
+　　js代码如下：
+
+
+    import {mapMutations} from 'vuex'
+    export default {
+        name: "Vhome",
+        methods:{
+            // test(){
+            //     this.$store.commit('addAge')
+            // },
+            ...mapMutations(['addAge']),
+        }
+    }
+
+　　记住：mutation 必须是同步函数
+
+五、mapActions
+Action 类似于 mutation，不同在于：
+Action 提交的是 mutation，而不是直接变更状态。
+Action 可以包含任意异步操作。
+　　例如我们需要操作年龄，vuex代码如下：
+
+    import Vue from 'vue'
+    import Vuex from 'vuex'
+    
+    Vue.use(Vuex);
+    
+    export default new Vuex.Store({
+      state: {//存放状态，类似于data
+        nickname:'qiqi',
+        age:18,
+        gender:'女',
+        firstname:'李',
+        lastname:'辉',
+        days:1000,
+      },
+      getters:{
+        realname(state){
+          return state.firstname+state.lastname
+        },
+        days_us(state){
+          return (state.days/7).toFixed(2)
+        }
+      },
+      mutations: {//类似于methods
+        addAge(state){
+          state.age++;
+        }
+      },
+      actions: {
+        addAgeAction({ commit }){
+          commit('addAge');
+        }
+      },
+      modules: {}
+    })
+
+　　不使用mapActions时，Action 通过 store.dispatch 方法触发。HTML代码如下：
+
+<div><button @click="test1">使用actions使年龄加1</button></div>
+　　js代码如下：
+
+       methods:{
+                test1(){
+                   this.$store.dispatch('addAgeAction')
+                }
+            }
+
+　　使用mapActions时，将组件的 methods 映射为 store.dispatch 调用。HTML代码如下：
+
+    <div><button @click="addAgeAction">使用actions使年龄加1</button></div>
+　　js代码如下：
+
+
+    import {mapActions} from 'vuex'
+    export default {
+        name: "Vhome",
+        methods:{
+            ...mapActions(['addAgeAction']),
+        }
+    }
+
+　　mutation 必须同步执行，Action 就不受约束！我们可以在 action 内部执行异步操作。
+　　Tags:Vuex
