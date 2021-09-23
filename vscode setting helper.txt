@@ -1,0 +1,8 @@
+**VS code报 no-unused-vars 错误**
+1.打开package.json,在devDependencies 下安装eslint:"^6.7.2",
+2.在eslintConfig节点下的rules下添加
+"no-unused-vars":"off";
+"no-console":"off"
+"no-irregular-wittespance":"off"
+"no-debugger":"off"
+3.重启VScode即可
