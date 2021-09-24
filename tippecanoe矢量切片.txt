@@ -1,0 +1,66 @@
+tippecanoe 矢量切片,mapbox-gl 显示
+1.现有geijson 数据
+2.用tippecanoe工具进行切片
+  命令：tippecanoe -e ./pbf -pC -Z1 -z13 -f geojson.geojson 
+  -e 是指保存矢量文件*.pbf   mime类型为application/x-protobuf
+  ./pbf 切片文件保存到当前目录的pbf目录下
+  -Z1 -z13 是指切片范围1:13
+  -f geojson.geojson 是指geojson文件
+3.将切片文件通过iis发布，
+	解决跨域的问题
+	iis->http响应标头->添加
+	Access-Control-Allow-Headers    Content-Type
+	Access-Control-Allow-Methods	GET, POST, PUT, DELETE, OPTIONS
+	Access-Control-Allow-Origin		*
+4.用mapbox-gl.js
+	map.on("load",()=>{
+		//数据源
+        let vectorSource={
+           "type":'vector',
+            "tiles":["http://localhost:19000/{z}/{x}/{y}.pbf"]
+        }
+        //填充
+        map.addLayer({
+          "id":"hbfill",
+          "type":"fill",
+          "source":vectorSource,
+          "source-layer":"geojson",
+          "paint":{
+            'fill-color':'#088',
+            'fill-opacity':[
+              'match',
+              ['get','name'],'武汉市',0.8,
+              0.3
+            ]
+          }
+        });
+        //文字标注
+        map.addLayer({
+          "id":"hbsymbol",
+          "type":"symbol",
+           "source":vectorSource,
+          "layout":{
+            "text-field":["format",["get","name"],{
+              "text-color":'#eee',
+               "font-scale":0.9
+            },
+            " · ",{},
+            ["get","adcode"],{
+              "text-color":'#eee',
+              "font-scale":0.7
+            }
+            ]
+          },
+          "source-layer":"geojson",
+        });
+        //边界轮廓
+        map.addLayer({
+          "id":"hbborder",
+          "type":"line",
+           "source":vectorSource,
+          "paint":{
+            'line-color':'#fff',
+            'line-width':1.2,
+          },
+          "source-layer":"geojson",
+        });
